@@ -1,11 +1,121 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const site = {
+  title: "Grubby Giant",
+  tagline: "Build fast. Ship faster.",
+  links: [
+    { label: "GitHub", url: "#" },
+    { label: "Docs", url: "#" },
+    { label: "Contact", url: "#" },
+  ],
+  features: [
+    { icon: "⚡", title: "Blazing Fast", desc: "Built with Astro, zero JS by default." },
+    { icon: "🌍", title: "Global CDN", desc: "Deploy anywhere, reach everyone." },
+    { icon: "🔒", title: "Secure", desc: "Enterprise-grade security out of the box." },
+  ],
+};
 ---
-
-<Layout>
-	<Welcome />
-</Layout>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{site.title}</title>
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a0f;
+      --card: #13131a;
+      --text: #e4e4e7;
+      --muted: #71717a;
+      --accent: #a78bfa;
+      --border: #27272a;
+    }
+    html, body { height: 100%; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 720px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+    }
+    .logo {
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #a78bfa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline {
+      color: var(--muted);
+      font-size: 1.15rem;
+      margin-bottom: 3rem;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+    .card p { color: var(--muted); font-size: 0.875rem; line-height: 1.5; }
+    .links { display: flex; gap: 1.5rem; justify-content: center; }
+    .links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .links a:hover { color: var(--text); }
+    .badge {
+      display: inline-block;
+      padding: 0.3rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 560px) {
+      .features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="badge">v1.0 — Deployed on Alibaba Cloud</span>
+    <h1 class="logo">{site.title}</h1>
+    <p class="tagline">{site.tagline}</p>
+    <div class="features">
+      {site.features.map(f => (
+        <div class="card">
+          <div class="icon">{f.icon}</div>
+          <h3>{f.title}</h3>
+          <p>{f.desc}</p>
+        </div>
+      ))}
+    </div>
+    <nav class="links">
+      {site.links.map(l => <a href={l.url}>{l.label}</a>)}
+    </nav>
+  </div>
+</body>
+</html>
