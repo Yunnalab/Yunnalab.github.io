@@ -1,0 +1,140 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getPostSlug } from "@/utils/getPostPaths";
+import { stripBase } from "@/utils/withBase";
+import config from "@/config";
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const posts = await getCollection("posts");
+const sortedPosts = posts
+  .filter(({ data }) => !data.draft)
+  .sort((a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf());
+
+const relativePath = stripBase(Astro.url.pathname);
+const currentSlug = relativePath.replace(/^\/posts\//, "").replace(/\/$/, "");
+
+interface PostItem {
+  id: string;
+  title: string;
+  slug: string;
+  isCurrent: boolean;
+}
+
+interface CategoryItem {
+  name: string;
+  posts: PostItem[];
+  isOpen: boolean;
+}
+
+const categories: CategoryItem[] = [];
+
+// Group posts by directory
+for (const post of sortedPosts) {
+  const slug = getPostSlug(post.id, post.filePath);
+  const parts = post.id.split("/");
+
+  if (parts.length > 1) {
+    // Post is in a subdirectory
+    const categoryName = parts[0];
+    let category = categories.find(c => c.name === categoryName);
+    if (!category) {
+      category = { name: categoryName, posts: [], isOpen: false };
+      categories.push(category);
+    }
+    category.posts.push({
+      id: post.id,
+      title: post.data.title,
+      slug,
+      isCurrent: currentSlug === slug,
+    });
+    if (category.posts.some(p => p.isCurrent)) {
+      category.isOpen = true;
+    }
+  } else {
+    // Root level post - add as "uncategorized"
+    let uncategorized = categories.find(c => c.name === "uncategorized");
+    if (!uncategorized) {
+      uncategorized = { name: "uncategorized", posts: [], isOpen: false };
+      categories.push(uncategorized);
+    }
+    uncategorized.posts.push({
+      id: post.id,
+      title: post.data.title,
+      slug,
+      isCurrent: currentSlug === slug,
+    });
+  }
+}
+---
+
+<aside class="border-border hidden w-64 shrink-0 border-r lg:block">
+  <nav class="sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto p-4">
+    <ul class="space-y-1">
+      {
+        categories.map(category => (
+          <li>
+            {category.name !== "uncategorized" ? (
+              <details open={category.isOpen} class="group">
+                <summary class="hover:bg-muted flex cursor-pointer items-center gap-2 rounded px-2 py-2 text-sm font-medium select-none">
+                  <svg
+                    class="h-4 w-4 transition-transform group-open:rotate-90"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                  {category.name}
+                </summary>
+                <ul class="ml-4 space-y-1">
+                  {category.posts.map(post => (
+                    <li>
+                      <a
+                        href={getRelativeLocaleUrl(
+                          locale,
+                          `posts/${post.slug}`
+                        )}
+                        class:list={[
+                          "hover:bg-muted block rounded px-2 py-1 text-sm",
+                          {
+                            "bg-muted text-accent font-medium": post.isCurrent,
+                          },
+                          { "text-muted-foreground": !post.isCurrent },
+                        ]}
+                      >
+                        {post.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ) : (
+              <ul class="space-y-1">
+                {category.posts.map(post => (
+                  <li>
+                    <a
+                      href={getRelativeLocaleUrl(locale, `posts/${post.slug}`)}
+                      class:list={[
+                        "hover:bg-muted block rounded px-2 py-1 text-sm",
+                        { "bg-muted text-accent font-medium": post.isCurrent },
+                        { "text-muted-foreground": !post.isCurrent },
+                      ]}
+                    >
+                      {post.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</aside>

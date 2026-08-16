@@ -1,121 +1,117 @@
 ---
-const site = {
-  title: "Grubby Giant",
-  tagline: "Build fast. Ship faster.",
-  links: [
-    { label: "GitHub", url: "#" },
-    { label: "Docs", url: "#" },
-    { label: "Contact", url: "#" },
-  ],
-  features: [
-    { icon: "⚡", title: "Blazing Fast", desc: "Built with Astro, zero JS by default." },
-    { icon: "🌍", title: "Global CDN", desc: "Deploy anywhere, reach everyone." },
-    { icon: "🔒", title: "Secure", desc: "Enterprise-grade security out of the box." },
-  ],
-};
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Sidebar from "@/components/Sidebar.astro";
+import Socials from "@/components/Socials.astro";
+import Card from "@/components/Card.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+const { socials, posts: postsConfig } = config;
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+
+const posts = await getCollection("posts");
+const sortedPosts = getSortedPosts(posts);
+const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
+const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const homePath = getRelativeLocaleUrl(locale, "");
 ---
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{site.title}</title>
-  <style is:global>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #0a0a0f;
-      --card: #13131a;
-      --text: #e4e4e7;
-      --muted: #71717a;
-      --accent: #a78bfa;
-      --border: #27272a;
-    }
-    html, body { height: 100%; }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      max-width: 720px;
-      width: 100%;
-      padding: 2rem;
-      text-align: center;
-    }
-    .logo {
-      font-size: 3.5rem;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, #a78bfa, #f472b6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .tagline {
-      color: var(--muted);
-      font-size: 1.15rem;
-      margin-bottom: 3rem;
-    }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-      margin-bottom: 3rem;
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem 1.25rem;
-      transition: border-color 0.2s;
-    }
-    .card:hover { border-color: var(--accent); }
-    .card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
-    .card h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
-    .card p { color: var(--muted); font-size: 0.875rem; line-height: 1.5; }
-    .links { display: flex; gap: 1.5rem; justify-content: center; }
-    .links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-    .links a:hover { color: var(--text); }
-    .badge {
-      display: inline-block;
-      padding: 0.3rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 2rem;
-    }
-    @media (max-width: 560px) {
-      .features { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <span class="badge">v1.0 — Deployed on Alibaba Cloud</span>
-    <h1 class="logo">{site.title}</h1>
-    <p class="tagline">{site.tagline}</p>
-    <div class="features">
-      {site.features.map(f => (
-        <div class="card">
-          <div class="icon">{f.icon}</div>
-          <h3>{f.title}</h3>
-          <p>{f.desc}</p>
-        </div>
-      ))}
-    </div>
-    <nav class="links">
-      {site.links.map(l => <a href={l.url}>{l.label}</a>)}
-    </nav>
+
+<Layout>
+  <Header />
+  <div class="flex flex-1">
+    <Sidebar />
+    <main
+      id="main-content"
+      data-layout="index"
+      data-home-path={homePath}
+      class="app-layout my-1 min-w-0 flex-1"
+    >
+      <section id="hero" class="border-border border-b pt-8 pb-6">
+        <blockquote class="my-4 sm:my-8">
+          <p
+            class="text-muted-foreground text-xl font-light italic sm:text-2xl"
+          >
+            "The only way to do great work is to love what you do."
+          </p>
+          <cite class="text-accent mt-4 block text-base not-italic">
+            — Steve Jobs
+          </cite>
+        </blockquote>
+        {
+          socials.length > 0 && (
+            <div class="mt-4 flex max-sm:flex-col sm:items-center">
+              <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
+                {t.home.socialLinks}:
+              </div>
+              <Socials />
+            </div>
+          )
+        }
+      </section>
+
+      {
+        featuredPosts.length > 0 && (
+          <section
+            id="featured"
+            class:list={[
+              "pt-12 pb-6",
+              { "border-border border-b": recentPosts.length > 0 },
+            ]}
+          >
+            <h2 class="text-2xl font-semibold tracking-wide">
+              {t.home.featured}
+            </h2>
+            <ul>
+              {featuredPosts.map(data => (
+                <Card variant="h3" {...data} />
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        recentPosts.length > 0 && (
+          <section id="recent-posts" class="pt-12 pb-6">
+            <h2 class="text-2xl font-semibold tracking-wide">
+              {t.home.recentPosts}
+            </h2>
+            <ul>
+              {recentPosts.slice(0, postsConfig.perIndex).map(data => (
+                <Card variant="h3" {...data} />
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <div class="my-8 text-center">
+        <LinkButton href={getRelativeLocaleUrl(locale, "posts")}>
+          {t.home.allPosts}
+          <IconArrowRight class="inline-block rtl:-rotate-180" />
+        </LinkButton>
+      </div>
+    </main>
   </div>
-</body>
-</html>
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
+      ?.dataset;
+    const baseRoot = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+    if (indexLayout?.layout) {
+      sessionStorage.setItem("backUrl", indexLayout.homePath ?? baseRoot);
+    }
+  });
+</script>

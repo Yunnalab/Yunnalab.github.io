@@ -1,0 +1,36 @@
+/* Register design tokens for Tailwind v4 */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --font-app:
+    "Noto Sans SC", "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
+    Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+/* Light theme values - Mizuki-Akiyama */
+:root,
+[data-theme="light"] {
+  --background: #fff7fb;
+  --foreground: #21101c;
+  --accent: #b72f78;
+  --accent-foreground: #ffffff;
+  --muted: #f4ddea;
+  --muted-foreground: #6c5363;
+  --border: #d6b9cb;
+}
+
+/* Dark theme values - Mizuki-Akiyama */
+[data-theme="dark"] {
+  --background: #10111b;
+  --foreground: #eee7f0;
+  --accent: #e6a6c8;
+  --accent-foreground: #2b1422;
+  --muted: #1d1a2a;
+  --muted-foreground: #c8b9ca;
+  --border: #4d465c;
+}
