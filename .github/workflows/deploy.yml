@@ -26,13 +26,24 @@ jobs:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@v5
 
+      # deploy-pages requires EXACTLY ONE artifact named "github-pages" in the
+      # run. Re-running a workflow (especially "Re-run all jobs") can leave the
+      # previous attempt's artifact around, which breaks the deploy with
+      # "Multiple artifacts named github-pages". Delete any stale copies first.
+      - name: "🧹 Delete stale github-pages artifact"
+        uses: GeekyEggo/delete-artifact@v6
+        with:
+          name: github-pages
+          failOnError: false
+          useGlob: false
+
       - name: "📦 Install pnpm"
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: "11.3.0"
 
       - name: "⬢ Use Node.js"
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: "pnpm"
@@ -44,7 +55,7 @@ jobs:
         run: pnpm run build
 
       - name: "📤 Upload artifact"
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -58,4 +69,4 @@ jobs:
     steps:
       - name: "🚀 Deploy to GitHub Pages"
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
