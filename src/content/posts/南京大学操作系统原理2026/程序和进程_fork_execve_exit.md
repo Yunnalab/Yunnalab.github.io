@@ -471,8 +471,6 @@ static int sys_fork(struct proc *caller) {
 
 ### 7.2 fork炸弹
 
-![](./images/程序和进程_fork_execve_exit/image15.jpg)
-
 图：Fork炸弹：指数级进程增长
 
 **刚才的示例程序：**
@@ -493,8 +491,6 @@ while(1) { fork(); }
 - 系统有限资源迅速耗尽，导致拒绝服务（DoS）
 
 ### 7.3 fork()的应用场景
-
-![](./images/程序和进程_fork_execve_exit/image16.jpg)
 
 图：fork()的全量内存快照应用
 
