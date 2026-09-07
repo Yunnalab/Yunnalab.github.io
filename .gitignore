@@ -31,3 +31,5 @@ public/pagefind
 
 # docker compose
 compose.override.yaml
+
+./src/content/posts/生成式软件工程NJU/.git/
