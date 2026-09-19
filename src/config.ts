@@ -26,6 +26,12 @@ const config: ResolvedAstroPaperConfig = {
     scheduledPostMargin:
       userConfig.posts?.scheduledPostMargin ?? 15 * 60 * 1000,
   },
+  moments: {
+    perIndex: userConfig.moments?.perIndex ?? 10,
+    perPage: userConfig.moments?.perPage ?? 10,
+    syncPosts: userConfig.moments?.syncPosts ?? true,
+    avatar: userConfig.moments?.avatar ?? "/avatar.jpg",
+  },
   features: {
     lightAndDarkMode: userConfig.features?.lightAndDarkMode ?? true,
     dynamicOgImage: userConfig.features?.dynamicOgImage ?? true,

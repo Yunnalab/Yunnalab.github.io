@@ -25,7 +25,8 @@ export default defineConfig({
   ],
   i18n: {
     locales: ["en", "zh"],
-    defaultLocale: "en",
+    // 站点语言与 astro-paper.config.ts 的 site.lang 一致:中文
+    defaultLocale: "zh",
     routing: {
       prefixDefaultLocale: false,
     },

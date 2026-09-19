@@ -33,6 +33,17 @@ interface PostsConfig {
   scheduledPostMargin?: number;
 }
 
+interface MomentsConfig {
+  /** 首页动态流显示的条数,默认 10 */
+  perIndex?: number;
+  /** /moments 动态列表每页条数,默认 10 */
+  perPage?: number;
+  /** 是否把新发布的文章自动同步进动态流,默认 true */
+  syncPosts?: boolean;
+  /** 动态卡片头像,默认 /avatar.jpg */
+  avatar?: string;
+}
+
 interface FeaturesConfig {
   /** Enable light/dark mode toggle. Defaults to true. */
   lightAndDarkMode?: boolean;
@@ -95,6 +106,7 @@ interface ShareLink {
 interface AstroPaperConfig {
   site: SiteConfig;
   posts?: PostsConfig;
+  moments?: MomentsConfig;
   features?: FeaturesConfig;
   /** Social profile links shown in header/footer */
   socials?: SocialLink[];
@@ -120,6 +132,7 @@ type ResolvedSiteConfig = Required<
 export interface ResolvedAstroPaperConfig {
   site: ResolvedSiteConfig;
   posts: Required<PostsConfig>;
+  moments: Required<MomentsConfig>;
   features: Required<FeaturesConfig>;
   socials: SocialLink[];
   shareLinks: ShareLink[];

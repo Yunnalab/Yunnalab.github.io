@@ -61,3 +61,42 @@
 :target {
   scroll-margin-block: 1rem;
 }
+
+/* 动态(说说)正文:比文章更紧凑的排版 */
+@layer base {
+  .moment-body {
+    @apply text-[0.95rem] leading-relaxed break-words;
+
+    > * + * {
+      @apply mt-2;
+    }
+
+    a {
+      @apply text-accent decoration-dashed underline-offset-4 hover:underline;
+    }
+
+    img {
+      @apply my-2 max-h-96 rounded-lg;
+    }
+
+    blockquote {
+      @apply border-border text-muted-foreground border-s-4 ps-3 italic;
+    }
+
+    ul {
+      @apply list-disc ps-5;
+    }
+
+    ol {
+      @apply list-decimal ps-5;
+    }
+
+    code {
+      @apply bg-muted rounded px-1 py-0.5 text-[0.85em];
+    }
+
+    pre {
+      @apply bg-muted overflow-x-auto rounded-lg p-3 text-sm;
+    }
+  }
+}

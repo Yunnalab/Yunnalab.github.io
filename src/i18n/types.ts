@@ -6,6 +6,7 @@ export interface UIStrings {
     about: string;
     archives: string;
     search: string;
+    moments: string;
   };
   post: {
     publishedAt: string;
@@ -30,6 +31,19 @@ export interface UIStrings {
     featured: string;
     recentPosts: string;
     allPosts: string;
+    moments: string;
+    allMoments: string;
+  };
+  moments: {
+    pageTitle: string;
+    pageDesc: string;
+    justNow: string;
+    minutesAgo: string;
+    hoursAgo: string;
+    pinned: string;
+    publishedPost: string;
+    readPost: string;
+    empty: string;
   };
   footer: {
     copyright: string;

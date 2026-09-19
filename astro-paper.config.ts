@@ -17,6 +17,14 @@ export default defineAstroPaperConfig({
     perIndex: 4,
     scheduledPostMargin: 15 * 60 * 1000,
   },
+  // 动态(说说):留言式的短内容流
+  moments: {
+    perIndex: 10,
+    perPage: 10,
+    // 新发布的文章自动同步到动态流
+    syncPosts: true,
+    avatar: "/avatar.jpg",
+  },
   features: {
     lightAndDarkMode: true,
     dynamicOgImage: true,

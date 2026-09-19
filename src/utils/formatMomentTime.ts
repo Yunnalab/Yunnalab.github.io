@@ -1,0 +1,59 @@
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import config from "@/config";
+import { tplStr } from "@/i18n/format";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+export interface RelativeTimeLabels {
+  justNow: string;
+  minutesAgo: string;
+  hoursAgo: string;
+}
+
+/**
+ * 动态统一的时间显示(整张卡片只有这一处时间):
+ * - 24 小时以内:「刚刚 / n 分钟前 / n 小时前」
+ * - 超过 24 小时:回退成具体日期时间(如 2026年9月9日 08:00)
+ *
+ * 客户端脚本(MomentFeed)用同一格式重算,二者不会出现不一致。
+ */
+export function formatMomentTime(
+  date: Date | string,
+  locale: string = config.site.lang,
+  labels?: RelativeTimeLabels,
+  tz: string = config.site.timezone
+): string {
+  const target = dayjs(date).tz(tz);
+  const now = dayjs().tz(tz);
+  const diffSeconds = now.diff(target, "second");
+
+  if (labels && diffSeconds >= 0) {
+    if (diffSeconds < 60) return labels.justNow;
+
+    const minutes = Math.floor(diffSeconds / 60);
+    if (minutes < 60) return tplStr(labels.minutesAgo, { count: minutes });
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return tplStr(labels.hoursAgo, { count: hours });
+  }
+
+  return formatFullTime(date, locale, tz);
+}
+
+/** 完整日期时间,同时用作 <time title> 悬停提示 */
+export function formatFullTime(
+  date: Date | string,
+  locale: string = config.site.lang,
+  tz: string = config.site.timezone
+): string {
+  return dayjs(date)
+    .tz(tz)
+    .format(
+      locale.toLowerCase().startsWith("zh")
+        ? "YYYY年M月D日 HH:mm"
+        : "MMM D, YYYY HH:mm"
+    );
+}

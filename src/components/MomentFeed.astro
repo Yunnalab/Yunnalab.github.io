@@ -1,0 +1,99 @@
+---
+import MomentCard from "./MomentCard.astro";
+import { useTranslations } from "@/i18n";
+import type { FeedItem } from "@/utils/getFeedItems";
+import config from "@/config";
+
+type Props = {
+  items: FeedItem[];
+};
+
+const { items } = Astro.props;
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+---
+
+{
+  items.length === 0 ? (
+    <p class="text-muted-foreground border-border rounded-xl border border-dashed p-6 text-center text-sm">
+      {t.moments.empty}
+    </p>
+  ) : (
+    <ul
+      id="moment-feed"
+      class="space-y-4"
+      data-label-just-now={t.moments.justNow}
+      data-label-minutes={t.moments.minutesAgo}
+      data-label-hours={t.moments.hoursAgo}
+    >
+      {items.map(item => (
+        <MomentCard {item} />
+      ))}
+    </ul>
+  )
+}
+
+<script>
+  type FeedLabels = {
+    justNow: string;
+    minutes: string;
+    hours: string;
+  };
+
+  function fill(template: string, vars: Record<string, string | number>) {
+    return template.replace(/\{\{(\w+)\}\}/g, (_, key: string) =>
+      vars[key] !== undefined ? String(vars[key]) : ""
+    );
+  }
+
+  /**
+   * 24 小时内返回相对时间,超过 24 小时返回 null
+   * (此时回退到服务端已经渲染好的具体日期)。
+   */
+  function relativeTime(date: Date, labels: FeedLabels) {
+    const diffSeconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (diffSeconds < 0) return null;
+
+    if (diffSeconds < 60) return labels.justNow;
+
+    const minutes = Math.floor(diffSeconds / 60);
+    if (minutes < 60) return fill(labels.minutes, { count: minutes });
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return fill(labels.hours, { count: hours });
+
+    return null;
+  }
+
+  function updateRelativeTimes() {
+    const feed = document.querySelector<HTMLElement>("#moment-feed");
+    if (!feed) return;
+
+    const { dataset } = feed;
+    const labels: FeedLabels = {
+      justNow: dataset.labelJustNow ?? "",
+      minutes: dataset.labelMinutes ?? "",
+      hours: dataset.labelHours ?? "",
+    };
+
+    for (const el of feed.querySelectorAll<HTMLTimeElement>(
+      "time[data-relative-time]"
+    )) {
+      const iso = el.dataset.relativeTime;
+      if (!iso) continue;
+      const date = new Date(iso);
+      if (Number.isNaN(date.getTime())) continue;
+      // 超过 24 小时:恢复成具体日期
+      el.textContent =
+        relativeTime(date, labels) ?? el.dataset.absoluteTime ?? "";
+    }
+  }
+
+  updateRelativeTimes();
+  document.addEventListener("astro:page-load", updateRelativeTimes);
+
+  const w = window as unknown as { __momentTicker?: number };
+  if (w.__momentTicker) window.clearInterval(w.__momentTicker);
+  w.__momentTicker = window.setInterval(updateRelativeTimes, 60_000);
+</script>

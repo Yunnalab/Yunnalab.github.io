@@ -8,6 +8,7 @@ export default {
     about: "About",
     archives: "Archives",
     search: "Search",
+    moments: "Moments",
   },
   post: {
     publishedAt: "Published at",
@@ -32,6 +33,19 @@ export default {
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",
+    moments: "Moments",
+    allMoments: "All moments",
+  },
+  moments: {
+    pageTitle: "Moments",
+    pageDesc: "Short notes, fragments and new posts.",
+    justNow: "just now",
+    minutesAgo: "{{count}} min ago",
+    hoursAgo: "{{count}} h ago",
+    pinned: "Pinned",
+    publishedPost: "Published a new post",
+    readPost: "Read more",
+    empty: "No moments yet.",
   },
   footer: {
     copyright: "Copyright",

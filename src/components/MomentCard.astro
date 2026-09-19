@@ -1,0 +1,184 @@
+---
+import { render } from "astro:content";
+import Tag from "./Tag.astro";
+import { useTranslations } from "@/i18n";
+import { slugifyStr } from "@/utils/slugify";
+import { getAssetPath } from "@/utils/withBase";
+import { formatFullTime, formatMomentTime } from "@/utils/formatMomentTime";
+import type { FeedItem } from "@/utils/getFeedItems";
+import config from "@/config";
+
+type Props = {
+  item: FeedItem;
+};
+
+const { item } = Astro.props;
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+
+// 手写动态需要在卡片内部渲染正文
+const Content = item.moment ? (await render(item.moment)).Content : undefined;
+
+// 24 小时内显示相对时间,超过则显示具体日期 —— 整张卡片只有这一处时间
+const momentTime = formatMomentTime(
+  item.datetime,
+  locale,
+  t.moments,
+  item.timezone
+);
+const fullTime = formatFullTime(item.datetime, locale, item.timezone);
+
+const imageCount = item.images.length;
+
+// 文章同步过来的动态不展示作者(作者信息在文章页)
+const showAuthor = item.kind === "moment";
+const hasMetaRow = showAuthor || item.pinned || item.mood;
+const imageGridClass =
+  imageCount === 1
+    ? "grid-cols-1"
+    : imageCount === 2
+      ? "grid-cols-2"
+      : imageCount === 4
+        ? "grid-cols-2"
+        : "grid-cols-3";
+---
+
+<li
+  id={item.anchor}
+  class:list={[
+    "border-border bg-background/70 scroll-mt-24 rounded-xl border p-4 shadow-xs transition-shadow sm:p-5",
+    "hover:shadow-md",
+    { "border-accent/60": item.pinned },
+  ]}
+>
+  <div class="flex items-start gap-3">
+    <img
+      src={getAssetPath(config.moments.avatar)}
+      alt={item.author}
+      width="80"
+      height="80"
+      loading="lazy"
+      decoding="async"
+      class="border-border size-10 shrink-0 rounded-full border object-cover"
+    />
+
+    <div class="min-w-0 flex-1">
+      {
+        hasMetaRow && (
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            {showAuthor && (
+              <span class="text-accent font-medium">{item.author}</span>
+            )}
+            {item.pinned && (
+              <span class="bg-accent/15 text-accent rounded-full px-2 py-0.5 text-xs">
+                {t.moments.pinned}
+              </span>
+            )}
+            {item.mood && (
+              <span class="text-muted-foreground text-xs">{item.mood}</span>
+            )}
+          </div>
+        )
+      }
+
+      <div
+        class="text-muted-foreground mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs"
+      >
+        <time
+          datetime={item.datetime.toISOString()}
+          data-relative-time={item.datetime.toISOString()}
+          data-absolute-time={fullTime}
+          title={fullTime}
+        >
+          {momentTime}
+        </time>
+        {
+          item.location && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>📍 {item.location}</span>
+            </>
+          )
+        }
+      </div>
+
+      {
+        item.title && (
+          <h3 class="mt-3 text-lg font-semibold break-words">{item.title}</h3>
+        )
+      }
+
+      {
+        Content && (
+          <div class="moment-body mt-2">
+            <Content />
+          </div>
+        )
+      }
+
+      {
+        item.images.length > 0 && (
+          <ul class:list={["mt-3 grid max-w-md gap-1.5", imageGridClass]}>
+            {item.images.map(image => (
+              <li
+                class:list={[
+                  "overflow-hidden rounded-lg",
+                  { "sm:max-w-sm": imageCount === 1 },
+                ]}
+              >
+                <a href={image.src} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    loading="lazy"
+                    decoding="async"
+                    class:list={[
+                      "w-full object-cover transition-transform duration-300 hover:scale-105 motion-reduce:transition-none",
+                      { "max-h-80 object-contain": imageCount === 1 },
+                      { "aspect-square": imageCount !== 1 },
+                    ]}
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      {
+        item.kind === "post" && item.url && (
+          <a
+            href={item.url}
+            class="border-border bg-muted/40 hover:border-accent mt-3 block rounded-lg border p-3 transition-colors"
+          >
+            <span class="text-muted-foreground text-xs">
+              {t.moments.publishedPost}
+            </span>
+            <span class="text-accent mt-1 block font-medium break-words">
+              《{item.title}》
+            </span>
+            {item.excerpt && (
+              <span class="text-muted-foreground mt-1 line-clamp-3 block text-sm">
+                {item.excerpt}
+              </span>
+            )}
+            <span class="text-accent mt-2 inline-block text-sm">
+              {t.moments.readPost} →
+            </span>
+          </a>
+        )
+      }
+
+      {
+        item.tags.length > 0 && (
+          <ul class="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+            {item.tags.map(tag => (
+              <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+</li>
