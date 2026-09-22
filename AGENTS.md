@@ -42,5 +42,9 @@ Consult these guides before working on related tasks:
   因此只有能往仓库提交的人才能发布动态。完整写法见该目录下的 `_README.md`。
 - 配置在 `astro-paper.config.ts` 的 `moments` 字段(条数、是否同步文章、头像)。
 - 动态正文样式类 `.moment-body` 定义在 `src/styles/global.css`。
+- 日期时间统一在 `src/content.config.ts` 的 `siteDatetime()` 里归一:frontmatter 只写日期时
+  YAML 会解析成 **UTC 零点**(东八区一显示就成了 08:00、并整体偏移 8 小时),这里按
+  `config.site.timezone` 的零点重新解释。`src/utils/formatMomentTime.ts` 的 `isDateOnly()`
+  判定这类条目,展示层对它们**只显示日期**、不显示相对时间;改日期逻辑时别破坏这两点。
 
 UI 文案在 `src/i18n/lang/` 下,当前默认语言(见 `astro.config.ts` 的 `i18n.defaultLocale`)为 `zh`。

@@ -4,7 +4,11 @@ import Tag from "./Tag.astro";
 import { useTranslations } from "@/i18n";
 import { slugifyStr } from "@/utils/slugify";
 import { getAssetPath } from "@/utils/withBase";
-import { formatFullTime, formatMomentTime } from "@/utils/formatMomentTime";
+import {
+  formatDateOnly,
+  formatFullTime,
+  formatMomentTime,
+} from "@/utils/formatMomentTime";
 import type { FeedItem } from "@/utils/getFeedItems";
 import config from "@/config";
 
@@ -20,14 +24,15 @@ const t = useTranslations(locale);
 // 手写动态需要在卡片内部渲染正文
 const Content = item.moment ? (await render(item.moment)).Content : undefined;
 
-// 24 小时内显示相对时间,超过则显示具体日期 —— 整张卡片只有这一处时间
-const momentTime = formatMomentTime(
-  item.datetime,
-  locale,
-  t.moments,
-  item.timezone
-);
-const fullTime = formatFullTime(item.datetime, locale, item.timezone);
+// 24 小时内显示相对时间,超过则显示具体日期 —— 整张卡片只有这一处时间。
+// 只写了日期的条目(没带时间)只显示日、不显示时刻:时间本来就没写,不能编。
+const dateText = formatDateOnly(item.datetime, locale, item.timezone);
+const momentTime = item.dateOnly
+  ? dateText
+  : formatMomentTime(item.datetime, locale, t.moments, item.timezone);
+const fullTime = item.dateOnly
+  ? dateText
+  : formatFullTime(item.datetime, locale, item.timezone);
 
 const imageCount = item.images.length;
 
@@ -87,7 +92,9 @@ const imageGridClass =
       >
         <time
           datetime={item.datetime.toISOString()}
-          data-relative-time={item.datetime.toISOString()}
+          data-relative-time={item.dateOnly
+            ? undefined
+            : item.datetime.toISOString()}
           data-absolute-time={fullTime}
           title={fullTime}
         >

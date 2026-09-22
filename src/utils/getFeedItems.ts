@@ -4,6 +4,7 @@ import config from "@/config";
 import { postFilter } from "./postFilter";
 import { momentFilter } from "./momentFilter";
 import { getPostUrl } from "./getPostPaths";
+import { isDateOnly } from "./formatMomentTime";
 import { slugifyStr } from "./slugify";
 
 export interface FeedImage {
@@ -25,6 +26,8 @@ export interface FeedItem {
   tags: string[];
   images: FeedImage[];
   pinned: boolean;
+  /** true = frontmatter 只写了日期,展示时不应出现「X 小时前」或具体时刻 */
+  dateOnly: boolean;
   timezone?: string;
   /** 文章动态的简介 */
   excerpt?: string;
@@ -60,6 +63,10 @@ function momentToFeedItem(moment: CollectionEntry<"moments">): FeedItem {
     tags: data.tags,
     images: resolveImages(data.images),
     pinned: data.pinned ?? false,
+    dateOnly: isDateOnly(
+      data.pubDatetime,
+      data.timezone ?? config.site.timezone
+    ),
     timezone: data.timezone,
     moment,
   };
@@ -77,6 +84,10 @@ function postToFeedItem(post: CollectionEntry<"posts">): FeedItem {
     tags: data.tags,
     images: [],
     pinned: false,
+    dateOnly: isDateOnly(
+      data.pubDatetime,
+      data.timezone ?? config.site.timezone
+    ),
     timezone: data.timezone,
     excerpt: data.description,
     url: getPostUrl(post.id, post.filePath, config.site.lang),

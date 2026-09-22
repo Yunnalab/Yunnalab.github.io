@@ -43,6 +43,38 @@ export function formatMomentTime(
   return formatFullTime(date, locale, tz);
 }
 
+/**
+ * 是否“只写了日期”(frontmatter 里没带时间)。
+ *
+ * 这类值在 schema 里已被归一到站点时区的零点,所以“恰好是当地零点”即视为
+ * 无具体时间:此时不能显示「X 小时前」或具体时刻 —— 时间本来就没写,显示出来只能是编的。
+ */
+export function isDateOnly(
+  date: Date | string,
+  tz: string = config.site.timezone
+): boolean {
+  const target = dayjs(date).tz(tz);
+  return (
+    target.hour() === 0 &&
+    target.minute() === 0 &&
+    target.second() === 0 &&
+    target.millisecond() === 0
+  );
+}
+
+/** 只有日期的条目:只显示日期,不带时分 */
+export function formatDateOnly(
+  date: Date | string,
+  locale: string = config.site.lang,
+  tz: string = config.site.timezone
+): string {
+  return dayjs(date)
+    .tz(tz)
+    .format(
+      locale.toLowerCase().startsWith("zh") ? "YYYY年M月D日" : "MMM D, YYYY"
+    );
+}
+
 /** 完整日期时间,同时用作 <time title> 悬停提示 */
 export function formatFullTime(
   date: Date | string,
