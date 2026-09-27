@@ -2,6 +2,8 @@
 @import "./theme.css";
 @import "./typography.css";
 @import "rehype-callouts/theme/obsidian";
+/* KaTeX 排版样式与字体(数学公式由 rehype-katex 在构建期输出) */
+@import "katex/dist/katex.min.css";
 
 @font-face {
   font-family: "Noto Sans SC";
@@ -60,6 +62,19 @@
 
 :target {
   scroll-margin-block: 1rem;
+}
+
+/* 过宽的独立公式横向滚动,不撑破正文栏宽 */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25rem;
+}
+
+/* 公式语法出错时(rehype-katex throwOnError: false)给出可见提示 */
+.katex-error {
+  color: #dc2626;
+  font-family: var(--font-app);
 }
 
 /* 动态(说说)正文:比文章更紧凑的排版 */

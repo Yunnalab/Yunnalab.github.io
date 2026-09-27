@@ -5,7 +5,11 @@ import sitemap from "@astrojs/sitemap";
 import { unified } from "@astrojs/markdown-remark";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
+// 数学公式:$...$ 行内、$$...$$ 独立成行(remark-math 解析,rehype-katex 在构建期渲染)
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import rehypeCallouts from "rehype-callouts";
+import remarkBlockMath from "./src/utils/remarkBlockMath";
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -36,8 +40,24 @@ export default defineConfig({
       remarkPlugins: [
         remarkToc,
         [remarkCollapse, { test: "Table of contents" }],
+        // remark-math 需在 remark-rehype 之前,由 Astro 的 processor 统一挂载
+        remarkMath,
+        // 把同一行的 $$公式$$ 提升为块级公式(须在 remark-math 之后)
+        remarkBlockMath,
       ],
-      rehypePlugins: [rehypeCallouts],
+      rehypePlugins: [
+        rehypeCallouts,
+        [
+          rehypeKatex,
+          {
+            // 中文公式里常有 CJK 字符与换行,关掉 strict 以免整篇构建报错
+            strict: false,
+            // 单条公式出错时渲染成红色文本,而不是让整站构建失败
+            throwOnError: false,
+            output: "htmlAndMathml",
+          },
+        ],
+      ],
     }),
     shikiConfig: {
       themes: { light: "min-light", dark: "night-owl" },

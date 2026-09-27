@@ -48,3 +48,25 @@ Consult these guides before working on related tasks:
   判定这类条目,展示层对它们**只显示日期**、不显示相对时间;改日期逻辑时别破坏这两点。
 
 UI 文案在 `src/i18n/lang/` 下,当前默认语言(见 `astro.config.ts` 的 `i18n.defaultLocale`)为 `zh`。
+
+## 数学公式(KaTeX)
+
+公式在**构建期**由 `remark-math` + `rehype-katex` 渲染成静态 HTML,没有客户端 JS。
+插件接在 `astro.config.ts` 的 `markdown.processor` 上,排版样式与字体来自
+`src/styles/global.css` 里 `@import "katex/dist/katex.min.css"`。
+
+写公式时的约定:
+
+- 行内公式 `$...$`,块级公式 `$$...$$`。
+- 块级公式要**自己占一整行**(`$$公式$$` 单独一行也可以,由 `src/utils/remarkBlockMath.ts`
+  提升成块级);夹在句子中间的 `$$…$$` 仍按行内公式排版。
+- 正文里的美元符号必须转义成 `\$`(如 `\$10`、`\$50,000`),否则会被当成公式定界符,
+  甚至跨行把后面的文字一起吞进公式。
+- 表格单元格里的公式要把竖线写成 `\lvert` / `\rvert`(或 `\vert`);直接写 `|` 会被 GFM
+  当成单元格分隔符,把公式和整行表格一起切坏(例如 `$\varphi(x)=|x|$`)。
+
+改完 remark/rehype 插件后要删掉 Astro 的内容缓存再构建,否则旧文章的 markdown 不会重渲染:
+
+```bash
+rm -rf node_modules/.astro && pnpm run build
+```
