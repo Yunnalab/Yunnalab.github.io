@@ -23,8 +23,10 @@
 |------|------|------|
 | L1 | 欢迎来到未来 - 生成式软件工程导论 | [L1.md](./L1.md) |
 | L2 | 提示词工程 - Prompt Engineering | [L2.md](./L2.md) |
-| L3 | 软件仓管理 | [L3.md](./L3.md) |
+| L3 | 软件仓库管理 | [L3.md](./L3.md) |
 | L4 | 软件仓库管理（二）：面向 Agent 时代的版本管理重构 | [L4.md](./L4.md) |
+| L5 | 软件工程的来龙去脉 | [L5.md](./L5.md) |
+| L6 | 需求和架构（1） | [L6.md](./L6.md) |
 
 ---
 
@@ -61,8 +63,8 @@
 
 1. 克隆本仓库
 2. 按课时顺序阅读 Markdown 笔记
-3. 笔记中的插图按课时存于 `./media/L1/`、`./media/L2/`… 目录，正文一律用相对路径引用（如 `media/L4/image-3.png`）
-4. 插图命名沿用 `image.png` / `image-N.png`（截图）与 `imageN.jpg`（讲义裁图）两种，新增课时请建对应的 `media/LN/` 目录
+3. 笔记中的插图按课时统一存放于 `./media/L<课时号>/` 目录，正文一律用 `./media/...` 相对路径引用（如 `./media/L6/fig_01_software_not_soft.jpg`）
+4. 新增课时请建对应的 `media/LN/` 目录；插图命名可用 `image.png` / `image-N.png`（截图），也可用 `fig_NN_描述.jpg`（讲义/录像裁图）
 
 ---
 
