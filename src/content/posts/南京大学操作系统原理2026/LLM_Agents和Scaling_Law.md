@@ -1,6 +1,6 @@
 ---
 title: "LLM_Agents和Scaling_Law"
-author: "蒋炎岩"
+author: "deepseek"
 description: "南京大学2026操作系统原理课程第四讲：Scaling Law，LLM Agent架构，Agentic Loop"
 pubDatetime: 2026-09-05
 tags: ["操作系统","南京大学"]

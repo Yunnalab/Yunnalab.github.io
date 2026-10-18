@@ -1,6 +1,6 @@
 ---
 title: "程序和进程_fork_execve_exit"
-author: "蒋炎岩"
+author: "deepseek"
 description: "南京大学2026操作系统原理课程第五讲：虚拟化，程序vs进程，fork/execve/exit"
 pubDatetime: 2026-09-05
 tags: ["操作系统","南京大学"]
