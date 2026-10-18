@@ -32,4 +32,9 @@ public/pagefind
 # docker compose
 compose.override.yaml
 
-./src/content/posts/生成式软件工程NJU/.git/
+./src/content/posts/耶鲁博弈论/L2.md
+./src/content/posts/耶鲁博弈论/L3.md
+./src/content/posts/耶鲁博弈论/L4.md
+./src/content/posts/耶鲁博弈论/L5.md
+./src/content/posts/耶鲁博弈论/L6.md
+./src/content/posts/耶鲁博弈论/L7.md
