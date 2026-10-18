@@ -38,7 +38,7 @@ export default {
   },
   moments: {
     pageTitle: "动态",
-    pageDesc: "记录此刻的想法、碎片,以及每一篇新文章。",
+    pageDesc: "记录感兴趣的知识,写同人文",
     justNow: "刚刚",
     minutesAgo: "{{count}} 分钟前",
     hoursAgo: "{{count}} 小时前",
@@ -78,8 +78,8 @@ export default {
     goToNextPage: "下一页",
   },
   notFound: {
-    title: "404 未找到",
-    message: "页面不存在",
+    title: "404 not found",
+    message: "页面消失了",
     goHome: "返回首页",
   },
 } satisfies UIStrings;
