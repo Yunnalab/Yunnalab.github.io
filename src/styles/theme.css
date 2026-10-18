@@ -7,9 +7,24 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  /*
+    字体分工:
+    --font-latin    拉丁正文(Bitter,板衬线)
+    --font-display  拉丁标题(Zilla Slab,板衬线)
+    --font-cjk      中文(LXGW WenKai 霞鹜文楷,楷体;缺字回退系统字体)
+    中英文都是衬线/书写体系,混排时不再互相打架。
+  */
+  --font-latin: "Bitter";
+  --font-display: "Zilla Slab";
+  --font-cjk: "LXGW WenKai";
   --font-app:
-    "Noto Sans SC", "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono",
-    Menlo, Consolas, "Liberation Mono", monospace;
+    var(--font-latin), var(--font-cjk), "JetBrains Mono", ui-monospace,
+    SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace,
+    sans-serif;
+  --font-heading:
+    var(--font-display), var(--font-latin), var(--font-cjk), "JetBrains Mono",
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace,
+    sans-serif;
 }
 
 /* Light theme values - Mizuki-Akiyama */

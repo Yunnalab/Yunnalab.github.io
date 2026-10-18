@@ -70,3 +70,28 @@ UI 文案在 `src/i18n/lang/` 下,当前默认语言(见 `astro.config.ts` 的 `
 ```bash
 rm -rf node_modules/.astro && pnpm run build
 ```
+
+## 字体
+
+中英文分工(token 在 `src/styles/theme.css`):
+
+| token | 值 | 用在哪 |
+|---|---|---|
+| `--font-latin` | Bitter(板衬线) | 拉丁正文/UI(`--font-app` 第一位) |
+| `--font-display` | Zilla Slab(板衬线) | 拉丁标题(`--font-heading`,由 `global.css` 的 `h1..h6` 规则套用) |
+| `--font-cjk` | LXGW WenKai 霞鹜文楷(楷体) | 中文字形 |
+
+- 拉丁字体在 `public/fonts/`(`@font-face` 写在 `src/styles/global.css`),按 latin / latin-ext
+  子集 + `unicode-range` 自托管,只有真正用到才下载。
+- **中文字体是分片的**:`public/fonts/lxgw-wenkai/`(`lxgw-wenkai.css` + `files/` 下 194 个
+  woff2 分片,Regular/Bold 各 97 个,来自 npm 包 `lxgw-wenkai-webfont@1.7.0`,OFL-1.1)。
+  该 CSS 由 `src/layouts/Layout.astro` 与 `DocsLayout.astro` 用 `<link>` 引入,**不经过**
+  `global.css`——200KB 的 unicode-range 规则不适合塞进主 CSS。一篇长文实际只下载 1–2MB 分片。
+- `public/fonts/NotoSansSC-Regular.otf`(8MB)**只给构建期 OG 图用**(satori 只吃 otf/ttf),
+  故意没有 `@font-face`;写成 @font-face 会让浏览器为了回退白下 8MB。satori 读它的位置:
+  `src/pages/og.png.ts`、`src/pages/posts/[...slug]/index.png.ts`。
+- JetBrains Mono 是 woff2(`.ttf` 已删),接在字体链尾部兜住 √、α、β 这类符号。
+- 换字体:拉丁改 `public/fonts/` + `global.css` 的 `@font-face` + `theme.css` 两行 token;
+  中文替换 `public/fonts/lxgw-wenkai/` 整个目录,并同步 `Layout.astro`/`DocsLayout.astro` 的 link。
+- 楷体字面比黑体小约 5%,所以同样的字号看着略小;要补偿就在 `--font-app` 使用处加字号,
+  别改 `--font-cjk` 里的字体名顺序。

@@ -41,6 +41,11 @@ const rssHref = getRelativeLocaleUrl(
     <link rel="icon" type="image/svg+xml" href={getAssetPath("favicon.svg")} />
     <link rel="icon" href={getAssetPath("favicon.ico")} />
     <link rel="canonical" href={canonicalURL} />
+    <!-- 中文字体:霞鹜文楷(分片 woff2,只下载页面实际用到的 unicode-range 分片) -->
+    <link
+      rel="stylesheet"
+      href={getAssetPath("fonts/lxgw-wenkai/lxgw-wenkai.css")}
+    />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Primary meta -->
