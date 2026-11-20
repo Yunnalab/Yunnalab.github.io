@@ -28,6 +28,4 @@ description: "关于我"
 
 - GitHub: [Yunnalab](https://github.com/Yunnalab)
 
-## 友链
 
-（无，毕竟也没什么会关心我的朋友）
