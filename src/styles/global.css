@@ -278,6 +278,12 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding-block: 0.25rem;
+  /*
+    块级公式是 article 的直接子节点,继承到的是 .app-prose 容器在浅色主题下算出的
+    --prose 前景色(oklch(0.373 ...)),深色主题里会变成「深底深字」看不清。
+    这里改回正文用的 foreground 令牌。
+  */
+  color: var(--foreground);
 }
 
 /* 公式语法出错时(rehype-katex throwOnError: false)给出可见提示 */
